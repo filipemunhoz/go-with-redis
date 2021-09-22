@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -25,6 +26,9 @@ func main() {
 	gett := r.Methods(http.MethodGet).Subrouter()
 	gett.HandleFunc("/", getAll)
 
+	gettHealth := r.Methods(http.MethodGet).Subrouter()
+	gettHealth.HandleFunc("/health", GetHealth)
+
 	srv := &http.Server{
 		Handler:      r,
 		Addr:         ":8000",
@@ -33,6 +37,12 @@ func main() {
 	}
 
 	log.Fatal(srv.ListenAndServe())
+}
+
+func GetHealth(rw http.ResponseWriter, r *http.Request) {
+	rw.Header().Set("Content-Type", "application/json")
+	rw.WriteHeader(http.StatusOK)
+	io.WriteString(rw, `{"status": "ok"}`)
 }
 
 func getAll(rw http.ResponseWriter, r *http.Request) {
