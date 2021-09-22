@@ -49,9 +49,10 @@ func getAll(rw http.ResponseWriter, r *http.Request) {
 	rw.Header().Set("Content-Type", "application/json")
 
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "",
-		DB:       0,
+		Addr:       "localhost:6379",
+		Password:   "",
+		DB:         0,
+		MaxRetries: 3,
 	})
 
 	val, err := rdb.Get("person").Result()

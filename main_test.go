@@ -5,8 +5,24 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/go-redis/redis"
 	"github.com/stretchr/testify/assert"
 )
+
+func TestConnection(t *testing.T) {
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "",
+		DB:       0,
+	})
+
+	ping := rdb.Ping()
+	if ping.Err() != nil {
+		t.Fatal(ping.Err())
+	}
+
+	_ = rdb.Close()
+}
 
 func TestHealthCheckHandler(t *testing.T) {
 
